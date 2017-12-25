@@ -39,4 +39,9 @@ echo "Running includecheck"
 test $(make includecheck | egrep '*mlxsw*' | tee /dev/tty | wc -l) -eq 0
 check_err $? "includecheck failed"
 
+echo "Running checkstack"
+test $(make checkstack M=drivers/net/ethernet/mellanox/mlxsw/ | grep mlxsw | \
+       awk -F ':' '{ print $2 }' | head -n 1) -lt 512
+check_err $? "checkstack failed"
+
 exit 0
