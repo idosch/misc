@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# m4_ignore(
+echo "This is just a script template, not the script (yet) - pass it to 'argbash' to fix this." >&2
+exit 11  #)Created by argbash-init v2.5.0
+# ARG_OPTIONAL_BOOLEAN([debug],[d], [Enable useful debug options])
+# ARG_OPTIONAL_BOOLEAN([heavy-debug],[D], [Enable a lot of debug options. Results in a very slow kernel.])
+# ARG_OPTIONAL_BOOLEAN([virtme],[v], [Configure kernel for virtme])
+# ARG_OPTIONAL_BOOLEAN([sparse],[s], [Disable certain configuration options to allow sparse and friends to run])
+# ARG_HELP([Script to ease kernel configuration and compilation])
+# ARGBASH_GO
+
+# [ <-- needed because of Argbash
+
+echo "debug is $_arg_debug"
+echo "heavy-debug is $_arg_heavy_debug"
+echo "virtme is $_arg_virtme"
+echo "sparse is $_arg_sparse"
+
+# ] <-- needed because of Argbash
