@@ -1,0 +1,42 @@
+#!/bin/sh
+
+check_err()
+{
+	if [ $1 -ne 0 ]; then
+		echo $2 >&2
+		exit 1
+	fi
+}
+
+if [ ! -x "$(command -v smatch)" ]; then
+	echo "smatch is not in your patch. aborting" >&2
+	exit 1
+fi
+
+# Check if we actually have commits to push
+commits=$(git log @{u}..)
+if [ -z "$commits" ]; then
+	exit 0
+fi
+
+echo "Compiling kernel"
+./compile.sh -s > /dev/null
+check_err $? "compilation failed"
+
+echo "Running sparse"
+test $(make C=2 CF="-D__CHECK_ENDIAN__" \
+       M=drivers/net/ethernet/mellanox/mlxsw/ 2>&1 | egrep 'error|warn|info' | \
+       tee /dev/tty | wc -l) -eq 0
+check_err $? "sparse failed"
+
+echo "Running smatch"
+test $(make CHECK="smatch -p=kernel" C=2 \
+       M=drivers/net/ethernet/mellanox/mlxsw/ 2>&1 | \
+       egrep 'error|warn|info' | tee /dev/tty | wc -l) -eq 0
+check_err $? "smatch failed"
+
+echo "Running includecheck"
+test $(make includecheck | egrep '*mlxsw*' | tee /dev/tty | wc -l) -eq 0
+check_err $? "includecheck failed"
+
+exit 0
