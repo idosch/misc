@@ -1,0 +1,11 @@
+# Build server to build the kernel on
+#BUILD_SERVER=
+
+# Kernel source directory on the build server and device under test (DUT)
+#KERNEL_DIR=
+
+# Name of the git remote where the branch to test is located
+#REMOTE=
+
+# Device under test
+#DUT=
