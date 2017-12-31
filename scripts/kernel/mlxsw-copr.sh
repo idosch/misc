@@ -3,14 +3,10 @@ set -e
 
 source ./pcopr.config
 
-tmp_file=$(date +%s).txt
-if [ -f $tmp_file ]; then
-	exit 1
-fi
-
 last_tag_resolve()
 {
 	cd $DIR_REPO_SRC
+	git remote update &> /dev/null
 	echo $(git describe --tags $PATCH_BRANCH_BASE_SRC)
 	cd ..
 }
@@ -23,8 +19,10 @@ pkg_git_sha1_resolve()
 
 copr_pkg_ver_resolve()
 {
-	echo $(cat $tmp_file | grep "version:" | awk -F: '{ print $2 }' | \
-		cut -c 2-)
+	local sha1=$1
+
+	echo $(./pcopr_srpm-kernel_fedora -R $sha1 -V | grep "version:" | \
+	       awk -F: '{ print $2 }' | cut -c 2-)
 }
 
 tree_tag()
@@ -33,10 +31,11 @@ tree_tag()
 	local branch=$(echo $PATCH_BRANCH_LIST | awk -F/ '{ print $2 }')
 
 	cd $DIR_REPO_SRC
-	git branch -D tmp &> /dev/null
 	git checkout -b tmp -t $PATCH_BRANCH_LIST
 	git tag $ver
 	git push --tags --no-verify $remote tmp:$branch
+	git checkout master
+	git branch -D tmp
 	cd ..
 }
 
@@ -52,12 +51,11 @@ sha1=$(pkg_git_sha1_resolve $tag)
 echo "Corresponding sha1sum:" $sha1
 
 ./pcopr_patch
-./pcopr_srpm-kernel_fedora -B -R $sha1 -V | tee $tmp_file
+./pcopr_srpm-kernel_fedora -R $sha1 -b
 
 # Resolve COPR package version
-ver=kernel-$(copr_pkg_ver_resolve).${fc}
+ver=kernel-$(copr_pkg_ver_resolve $sha1).${fc}
 echo "COPR package version:" $ver
-rm $tmp_file
 
 # Tag our git tree with the version.
 tree_tag $ver
