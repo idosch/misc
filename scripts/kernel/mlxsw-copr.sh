@@ -36,7 +36,7 @@ tree_tag()
 	git branch -D tmp &> /dev/null
 	git checkout -b tmp -t $PATCH_BRANCH_LIST
 	git tag $ver
-	git push --tags $remote tmp:$branch
+	git push --tags --no-verify $remote tmp:$branch
 	cd ..
 }
 
