@@ -68,6 +68,7 @@ kernel_config()
 	config_enable CONFIG_BRIDGE_IGMP_SNOOPING
 	config_module CONFIG_NET_SCH_PRIO
 	config_module CONFIG_NET_SCH_RED
+	config_module CONFIG_NET_SCH_INGRESS
 	config_module CONFIG_NET_CLS_FLOWER
 	config_module CONFIG_NET_CLS_MATCHALL
 	config_module CONFIG_NET_ACT_GACT
