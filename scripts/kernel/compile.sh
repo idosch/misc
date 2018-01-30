@@ -51,6 +51,7 @@ kernel_config()
 	config_module CONFIG_NET_IPIP
 	config_module CONFIG_NET_IPGRE_DEMUX
 	config_module CONFIG_NET_IPGRE
+	config_module CONFIG_IPV6_GRE
 	config_enable CONFIG_IP_MROUTE_MULTIPLE_TABLES
 	config_disable CONFIG_TCP_MD5SIG
 	config_disable CONFIG_INET6_AH
