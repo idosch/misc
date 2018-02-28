@@ -123,30 +123,49 @@ kernel_config()
 
 general_debug()
 {
-	# Mostly based on Documentation/SubmitChecklist.txt
+	# General debug options
 	config_enable CONFIG_PREEMPT
 	config_enable CONFIG_DEBUG_PREEMPT
-	config_enable CONFIG_SLUB_DEBUG
-	config_enable CONFIG_SLUB_DEBUG_ON
-	config_enable CONFIG_DEBUG_PAGEALLOC
-	config_enable CONFIG_DEBUG_MUTEXES
-	config_enable CONFIG_DEBUG_SPINLOCK
+	config_enable CONFIG_DEBUG_INFO
+	# Lock debugging
+	config_enable CONFIG_LOCKDEP
+	config_enable CONFIG_PROVE_LOCKING
 	config_enable CONFIG_DEBUG_ATOMIC_SLEEP
 	config_enable CONFIG_PROVE_RCU
-	config_enable CONFIG_PROVE_RCU_REPEATEDLY
+	config_enable CONFIG_DEBUG_MUTEXES
+	config_enable CONFIG_DEBUG_SPINLOCK
+	# Memory debugging
+	config_enable CONFIG_DEBUG_VM
+	config_enable CONFIG_FORTIFY_SOURCE
 	config_enable CONFIG_KASAN
+	# Reference counting debugging
+	config_enable CONFIG_REFCOUNT_FULL
+	# Lockups debugging
+	config_enable CONFIG_LOCKUP_DETECTOR
+	config_enable CONFIG_SOFTLOCKUP_DETECTOR
+	config_enable CONFIG_HARDLOCKUP_DETECTOR
+	config_enable CONFIG_DETECT_HUNG_TASK
+	config_enable CONFIG_WQ_WATCHDOG
+	config_enable CONFIG_DETECT_HUNG_TASK
+	config_set_val CONFIG_DEFAULT_HUNG_TASK_TIMEOUT 120
+	# Undefined behavior debugging
+	config_enable CONFIG_UBSAN
+	config_enable CONFIG_UBSAN_SANITIZE_ALL
+	config_disable CONFIG_UBSAN_ALIGNMENT
+	config_enable CONFIG_UBSAN_NULL
 }
 
 heavy_debug()
 {
-	# General options
+	# General debug options
 	config_enable CONFIG_CRASH_DUMP
-	config_enable CONFIG_DEBUG_INFO
 	config_enable CONFIG_PANIC_ON_OOPS
 	config_enable CONFIG_DYNAMIC_DEBUG
-	config_enable CONFIG_WQ_WATCHDOG
 	config_enable CONFIG_DEBUG_NOTIFIERS
 	# Memory debugging
+	config_enable CONFIG_SLUB_DEBUG
+	config_enable CONFIG_SLUB_DEBUG_ON
+	config_enable CONFIG_DEBUG_PAGEALLOC
 	config_enable CONFIG_DEBUG_KMEMLEAK
 	config_disable CONFIG_DEBUG_KMEMLEAK_DEFAULT_OFF
 	config_set_val CONFIG_DEBUG_KMEMLEAK_EARLY_LOG_SIZE 4096
@@ -161,22 +180,11 @@ heavy_debug()
 	config_enable CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER
 	config_enable CONFIG_DMA_API_DEBUG
 	# Lock debugging
-	config_enable CONFIG_LOCKUP_DETECTOR
-	config_enable CONFIG_DETECT_HUNG_TASK
-	config_set_val CONFIG_DEFAULT_HUNG_TASK_TIMEOUT 120
 	config_enable CONFIG_DEBUG_LOCK_ALLOC
 	config_enable CONFIG_PROVE_LOCKING
 	config_enable CONFIG_LOCK_STAT
-	# RCU debugging (Documentation/RCU/checklist.txt)
 	config_enable CONFIG_DEBUG_OBJECTS_RCU_HEAD
 	config_enable CONFIG_SPARSE_RCU_POINTER
-	# Undefined behavior
-	config_enable CONFIG_UBSAN
-	config_enable CONFIG_UBSAN_SANITIZE_ALL
-	config_disable CONFIG_UBSAN_ALIGNMENT
-	config_enable CONFIG_UBSAN_NULL
-	# Reference counting
-	config_enable CONFIG_REFCOUNT_FULL
 }
 
 sparse_allow()
