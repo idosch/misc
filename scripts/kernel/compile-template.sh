@@ -5,7 +5,7 @@ echo "This is just a script template, not the script (yet) - pass it to 'argbash
 exit 11  #)Created by argbash-init v2.5.0
 # ARG_OPTIONAL_BOOLEAN([debug],[d], [Enable useful debug options])
 # ARG_OPTIONAL_BOOLEAN([heavy-debug],[D], [Enable a lot of debug options. Results in a very slow kernel.])
-# ARG_OPTIONAL_BOOLEAN([virtme],[v], [Configure kernel for virtme])
+# ARG_OPTIONAL_BOOLEAN([vm],[v], [Configure kernel for a VM])
 # ARG_OPTIONAL_BOOLEAN([sparse],[s], [Disable certain configuration options to allow sparse and friends to run])
 # ARG_HELP([Script to ease kernel configuration and compilation])
 # ARGBASH_GO
@@ -14,7 +14,7 @@ exit 11  #)Created by argbash-init v2.5.0
 
 echo "debug is $_arg_debug"
 echo "heavy-debug is $_arg_heavy_debug"
-echo "virtme is $_arg_virtme"
+echo "vm is $_arg_vm"
 echo "sparse is $_arg_sparse"
 
 # ] <-- needed because of Argbash

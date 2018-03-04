@@ -22,8 +22,7 @@ config_set_val()
 
 config_module()
 {
-	# virtme --kdir does not work with modules.
-	if [ "$_arg_virtme" = "on" ]; then
+	if [ "$_arg_vm" = "on" ]; then
 		scripts/config -e $1
 	else
 		scripts/config -m $1
@@ -86,6 +85,7 @@ kernel_config()
 	config_enable CONFIG_NET_DEVLINK
 	# File systems
 	config_module CONFIG_9P_FS
+	config_module CONFIG_XFS_FS
 	# Device Drivers
 	config_disable CONFIG_MACINTOSH_DRIVERS
 	config_module CONFIG_BONDING
@@ -119,6 +119,14 @@ kernel_config()
 	# Virtualization
 	config_module CONFIG_KVM
 	config_module CONFIG_KVM_INTEL
+	config_module CONFIG_VIRTIO
+	config_module CONFIG_VIRTIO_PCI
+	config_module CONFIG_VIRTIO_BLK
+	config_module CONFIG_NET_9P
+	config_module CONFIG_NET_9P_VIRTIO
+	config_module CONFIG_VIRTIO_NET
+	config_module CONFIG_VIRTIO_CONSOLE
+	config_module CONFIG_SCSI_VIRTIO
 }
 
 general_debug()
@@ -200,6 +208,7 @@ compile()
 	make -j`nproc`
 }
 
+
 die()
 {
 	local _ret=$2
@@ -222,16 +231,16 @@ begins_with_short_option()
 # THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_debug=off
 _arg_heavy_debug=off
-_arg_virtme=off
+_arg_vm=off
 _arg_sparse=off
 
 print_help ()
 {
 	printf "%s\n" "Script to ease kernel configuration and compilation"
-	printf 'Usage: %s [-d|--(no-)debug] [-D|--(no-)heavy-debug] [-v|--(no-)virtme] [-s|--(no-)sparse] [-h|--help]\n' "$0"
+	printf 'Usage: %s [-d|--(no-)debug] [-D|--(no-)heavy-debug] [-v|--(no-)vm] [-s|--(no-)sparse] [-h|--help]\n' "$0"
 	printf "\t%s\n" "-d,--debug,--no-debug: Enable useful debug options (off by default)"
 	printf "\t%s\n" "-D,--heavy-debug,--no-heavy-debug: Enable a lot of debug options. Results in a very slow kernel. (off by default)"
-	printf "\t%s\n" "-v,--virtme,--no-virtme: Configure kernel for virtme (off by default)"
+	printf "\t%s\n" "-v,--vm,--no-vm: Configure kernel for a VM (off by default)"
 	printf "\t%s\n" "-s,--sparse,--no-sparse: Disable certain configuration options to allow sparse and friends to run (off by default)"
 	printf "\t%s\n" "-h,--help: Prints help"
 }
@@ -266,12 +275,12 @@ parse_commandline ()
 					begins_with_short_option "$_next" && shift && set -- "-D" "-${_next}" "$@" || die "The short option '$_key' can't be decomposed to ${_key:0:2} and -${_key:2}, because ${_key:0:2} doesn't accept value and '-${_key:2:1}' doesn't correspond to a short option."
 				fi
 				;;
-			-v|--no-virtme|--virtme)
-				_arg_virtme="on"
-				test "${1:0:5}" = "--no-" && _arg_virtme="off"
+			-v|--no-vm|--vm)
+				_arg_vm="on"
+				test "${1:0:5}" = "--no-" && _arg_vm="off"
 				;;
 			-v*)
-				_arg_virtme="on"
+				_arg_vm="on"
 				_next="${_key##-v}"
 				if test -n "$_next" -a "$_next" != "$_key"
 				then
@@ -318,10 +327,6 @@ fi
 if [ "$_arg_heavy_debug" = "on" ]; then
 	general_debug
 	heavy_debug
-fi
-
-if [ "$_arg_virtme" = "on" ]; then
-	virtme-configkernel --update &> /dev/null
 fi
 
 if [ "$_arg_sparse" = "on" ]; then
