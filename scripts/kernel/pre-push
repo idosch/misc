@@ -9,7 +9,7 @@ check_err()
 }
 
 if [ ! -x "$(command -v smatch)" ]; then
-	echo "smatch is not in your patch. aborting" >&2
+	echo "Smatch is not in your patch. Aborting" >&2
 	exit 1
 fi
 
@@ -26,19 +26,19 @@ scripts/config -e CONFIG_UNWINDER_FRAME_POINTER
 scripts/config -d CONFIG_RETPOLINE
 scripts/config -d CONFIG_STACK_VALIDATION
 make -j`nproc` &> /dev/null
-check_err $? "compilation failed"
+check_err $? "Compilation failed"
 
 echo "Running sparse"
 test $(make C=2 CF="-D__CHECK_ENDIAN__" \
        M=drivers/net/ethernet/mellanox/mlxsw/ 2>&1 | egrep 'error|warn|info' | \
        tee /dev/tty | wc -l) -eq 0
-check_err $? "sparse failed"
+check_err $? "Sparse failed"
 
 echo "Running smatch"
 test $(make CHECK="smatch -p=kernel" C=2 \
        M=drivers/net/ethernet/mellanox/mlxsw/ 2>&1 | \
        egrep 'error|warn|info' | tee /dev/tty | wc -l) -eq 0
-check_err $? "smatch failed"
+check_err $? "Smatch failed"
 
 echo "Running includecheck"
 test $(make includecheck | egrep '*mlxsw*' | tee /dev/tty | wc -l) -eq 0
