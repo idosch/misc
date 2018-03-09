@@ -20,7 +20,12 @@ if [ -z "$commits" ]; then
 fi
 
 echo "Compiling kernel"
-./compile.sh -s > /dev/null
+make olddefconfig &> /dev/null
+# Need these options for sparse to work
+scripts/config -e CONFIG_UNWINDER_FRAME_POINTER
+scripts/config -d CONFIG_RETPOLINE
+scripts/config -d CONFIG_STACK_VALIDATION
+make -j`nproc` &> /dev/null
 check_err $? "compilation failed"
 
 echo "Running sparse"
