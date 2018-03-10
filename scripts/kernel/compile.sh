@@ -197,8 +197,8 @@ heavy_debug()
 
 sparse_allow()
 {
-	config_disable CONFIG_UNWINDER_ORC
 	config_enable CONFIG_UNWINDER_FRAME_POINTER
+	config_disable CONFIG_RETPOLINE
 	config_disable CONFIG_STACK_VALIDATION
 }
 
@@ -207,7 +207,6 @@ compile()
 	make olddefconfig &> /dev/null
 	make -j`nproc`
 }
-
 
 die()
 {
