@@ -60,6 +60,7 @@ kernel_config()
 	config_disable CONFIG_INET6_XFRM_MODE_BEET
 	config_disable CONFIG_IPV6_SIT
 	config_enable CONFIG_IPV6_MULTIPLE_TABLES
+	config_enable CONFIG_IPV6_MROUTE
 	config_disable CONFIG_NETLABEL
 	config_disable CONFIG_NETFILTER
 	config_module CONFIG_BRIDGE
