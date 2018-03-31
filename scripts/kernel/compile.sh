@@ -128,6 +128,11 @@ kernel_config()
 	config_module CONFIG_VIRTIO_NET
 	config_module CONFIG_VIRTIO_CONSOLE
 	config_module CONFIG_SCSI_VIRTIO
+	# Tracing
+	config_enable CONFIG_FUNCTION_TRACER
+	config_enable CONFIG_FUNCTION_GRAPH_TRACER
+	config_enable CONFIG_STACK_TRACER
+	config_enable CONFIG_DYNAMIC_FTRACE
 }
 
 general_debug()
