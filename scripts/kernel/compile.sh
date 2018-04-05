@@ -148,6 +148,7 @@ general_debug()
 	config_enable CONFIG_PROVE_RCU
 	config_enable CONFIG_DEBUG_MUTEXES
 	config_enable CONFIG_DEBUG_SPINLOCK
+	config_enable CONFIG_LOCK_STAT
 	# Memory debugging
 	config_enable CONFIG_DEBUG_VM
 	config_enable CONFIG_FORTIFY_SOURCE
