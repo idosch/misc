@@ -128,11 +128,6 @@ kernel_config()
 	config_module CONFIG_VIRTIO_NET
 	config_module CONFIG_VIRTIO_CONSOLE
 	config_module CONFIG_SCSI_VIRTIO
-	# Tracing
-	config_enable CONFIG_FUNCTION_TRACER
-	config_enable CONFIG_FUNCTION_GRAPH_TRACER
-	config_enable CONFIG_STACK_TRACER
-	config_enable CONFIG_DYNAMIC_FTRACE
 }
 
 general_debug()
@@ -168,6 +163,12 @@ general_debug()
 	config_enable CONFIG_UBSAN_SANITIZE_ALL
 	config_disable CONFIG_UBSAN_ALIGNMENT
 	config_enable CONFIG_UBSAN_NULL
+	# Tracing
+	config_enable CONFIG_FUNCTION_TRACER
+	config_enable CONFIG_FUNCTION_GRAPH_TRACER
+	config_enable CONFIG_STACK_TRACER
+	config_enable CONFIG_DYNAMIC_FTRACE
+	config_enable CONFIG_FTRACE_SYSCALLS
 }
 
 heavy_debug()
