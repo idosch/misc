@@ -136,6 +136,7 @@ general_debug()
 	config_enable CONFIG_PREEMPT
 	config_enable CONFIG_DEBUG_PREEMPT
 	config_enable CONFIG_DEBUG_INFO
+	config_enable CONFIG_UNWINDER_FRAME_POINTER
 	# Lock debugging
 	config_enable CONFIG_LOCKDEP
 	config_enable CONFIG_PROVE_LOCKING
