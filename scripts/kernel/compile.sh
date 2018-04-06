@@ -173,6 +173,8 @@ general_debug()
 	config_enable CONFIG_FTRACE_SYSCALLS
 	# Code coverage
 	config_enable CONFIG_KCOV
+	# syzkaller
+	config_enable CONFIG_USER_NS
 }
 
 heavy_debug()
