@@ -149,6 +149,7 @@ general_debug()
 	config_enable CONFIG_DEBUG_VM
 	config_enable CONFIG_FORTIFY_SOURCE
 	config_enable CONFIG_KASAN
+	config_enable CONFIG_KASAN_INLINE
 	# Reference counting debugging
 	config_enable CONFIG_REFCOUNT_FULL
 	# Lockups debugging
@@ -170,6 +171,8 @@ general_debug()
 	config_enable CONFIG_STACK_TRACER
 	config_enable CONFIG_DYNAMIC_FTRACE
 	config_enable CONFIG_FTRACE_SYSCALLS
+	# Code coverage
+	config_enable CONFIG_KCOV
 }
 
 heavy_debug()
