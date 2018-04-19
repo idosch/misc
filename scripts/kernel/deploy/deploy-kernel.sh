@@ -115,8 +115,9 @@ fi
 source ./deploy.config
 
 echo "Building kernel on build server: $BUILD_SERVER"
-ssh $BUILD_SERVER kernel_dir=$KERNEL_DIR remote=$REMOTE branch=$_arg_branch \
-	debug=$_arg_debug heavy_debug=$_arg_heavy_debug 'bash -s' <<'ENDSSH'
+ssh $BUILD_SERVER kernel_dir=$KERNEL_BUILD_DIR remote=$REMOTE \
+	branch=$_arg_branch debug=$_arg_debug heavy_debug=$_arg_heavy_debug \
+	'bash -s' <<'ENDSSH'
 cd $kernel_dir
 git remote update $remote
 git checkout -B $branch $remote/$branch
@@ -133,7 +134,7 @@ fi
 ENDSSH
 
 echo "Installing kernel on DUT: $DUT"
-ssh $DUT kernel_dir=$KERNEL_DIR 'bash -s' <<'ENDSSH'
+ssh $DUT kernel_dir=$KERNEL_DUT_DIR 'bash -s' <<'ENDSSH'
 cd $kernel_dir
 sudo make modules_install && sudo make install
 sudo grub2-reboot 0 && sudo reboot
