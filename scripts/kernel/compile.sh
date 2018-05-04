@@ -213,13 +213,6 @@ heavy_debug()
 	config_enable CONFIG_SPARSE_RCU_POINTER
 }
 
-sparse_allow()
-{
-	config_enable CONFIG_UNWINDER_FRAME_POINTER
-	config_disable CONFIG_RETPOLINE
-	config_disable CONFIG_STACK_VALIDATION
-}
-
 compile()
 {
 	make olddefconfig &> /dev/null
@@ -249,16 +242,14 @@ begins_with_short_option()
 _arg_debug=off
 _arg_heavy_debug=off
 _arg_vm=off
-_arg_sparse=off
 
 print_help ()
 {
 	printf "%s\n" "Script to ease kernel configuration and compilation"
-	printf 'Usage: %s [-d|--(no-)debug] [-D|--(no-)heavy-debug] [-v|--(no-)vm] [-s|--(no-)sparse] [-h|--help]\n' "$0"
+	printf 'Usage: %s [-d|--(no-)debug] [-D|--(no-)heavy-debug] [-v|--(no-)vm] [-h|--help]\n' "$0"
 	printf "\t%s\n" "-d,--debug,--no-debug: Enable useful debug options (off by default)"
 	printf "\t%s\n" "-D,--heavy-debug,--no-heavy-debug: Enable a lot of debug options. Results in a very slow kernel. (off by default)"
 	printf "\t%s\n" "-v,--vm,--no-vm: Configure kernel for a VM (off by default)"
-	printf "\t%s\n" "-s,--sparse,--no-sparse: Disable certain configuration options to allow sparse and friends to run (off by default)"
 	printf "\t%s\n" "-h,--help: Prints help"
 }
 
@@ -304,18 +295,6 @@ parse_commandline ()
 					begins_with_short_option "$_next" && shift && set -- "-v" "-${_next}" "$@" || die "The short option '$_key' can't be decomposed to ${_key:0:2} and -${_key:2}, because ${_key:0:2} doesn't accept value and '-${_key:2:1}' doesn't correspond to a short option."
 				fi
 				;;
-			-s|--no-sparse|--sparse)
-				_arg_sparse="on"
-				test "${1:0:5}" = "--no-" && _arg_sparse="off"
-				;;
-			-s*)
-				_arg_sparse="on"
-				_next="${_key##-s}"
-				if test -n "$_next" -a "$_next" != "$_key"
-				then
-					begins_with_short_option "$_next" && shift && set -- "-s" "-${_next}" "$@" || die "The short option '$_key' can't be decomposed to ${_key:0:2} and -${_key:2}, because ${_key:0:2} doesn't accept value and '-${_key:2:1}' doesn't correspond to a short option."
-				fi
-				;;
 			-h|--help)
 				print_help
 				exit 0
@@ -344,10 +323,6 @@ fi
 if [ "$_arg_heavy_debug" = "on" ]; then
 	general_debug
 	heavy_debug
-fi
-
-if [ "$_arg_sparse" = "on" ]; then
-	sparse_allow
 fi
 
 compile
