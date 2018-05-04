@@ -128,6 +128,10 @@ kernel_config()
 	config_module CONFIG_VIRTIO_NET
 	config_module CONFIG_VIRTIO_CONSOLE
 	config_module CONFIG_SCSI_VIRTIO
+	# Work around for GCC8
+	config_enable CONFIG_UNWINDER_FRAME_POINTER
+	config_disable CONFIG_RETPOLINE
+	config_disable CONFIG_STACK_VALIDATION
 }
 
 general_debug()
@@ -175,10 +179,6 @@ general_debug()
 	config_enable CONFIG_KCOV
 	# syzkaller
 	config_enable CONFIG_USER_NS
-	# Work around for GCC8
-	config_enable CONFIG_UNWINDER_FRAME_POINTER
-	config_disable CONFIG_RETPOLINE
-	config_disable CONFIG_STACK_VALIDATION
 }
 
 heavy_debug()
