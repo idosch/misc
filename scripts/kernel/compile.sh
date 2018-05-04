@@ -175,6 +175,10 @@ general_debug()
 	config_enable CONFIG_KCOV
 	# syzkaller
 	config_enable CONFIG_USER_NS
+	# Work around for GCC8
+	config_enable CONFIG_UNWINDER_FRAME_POINTER
+	config_disable CONFIG_RETPOLINE
+	config_disable CONFIG_STACK_VALIDATION
 }
 
 heavy_debug()
