@@ -213,7 +213,7 @@ fini()
 
 	export GIT_DIR=""
 
-	echo -e "Build end: $(date)"
+	echo -e "Build end: $(date)\n"
 }
 
 init
