@@ -153,6 +153,7 @@ general_debug()
 	config_enable CONFIG_DEBUG_VM
 	config_enable CONFIG_FORTIFY_SOURCE
 	config_enable CONFIG_KASAN
+	config_enable CONFIG_KASAN_EXTRA
 	config_enable CONFIG_KASAN_INLINE
 	# Reference counting debugging
 	config_enable CONFIG_REFCOUNT_FULL
