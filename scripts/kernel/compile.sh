@@ -168,7 +168,7 @@ general_debug()
 	config_enable CONFIG_UBSAN
 	config_enable CONFIG_UBSAN_SANITIZE_ALL
 	config_disable CONFIG_UBSAN_ALIGNMENT
-	config_enable CONFIG_UBSAN_NULL
+	config_disable CONFIG_UBSAN_NULL
 	# Tracing
 	config_enable CONFIG_FUNCTION_TRACER
 	config_enable CONFIG_FUNCTION_GRAPH_TRACER
