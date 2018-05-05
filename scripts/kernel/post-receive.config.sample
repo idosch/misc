@@ -1,0 +1,20 @@
+# Directory to deploy the code to
+#DEPLOY_DIR=
+
+# Compilation script
+#COMPILE_SCRIPT=
+
+# Host name of the device under test (DUT)
+#DUT=
+
+# Path of $DEPLOY_DIR on the DUT
+#DEPLOY_DIR_DUT=
+
+# Number of seconds to wait for DUT to reboot
+#DUT_WAIT=
+
+# Netdev to extract firmware version from
+# DUT_NETDEV=
+
+# Forwarding config
+# FORWARDING_CONF=

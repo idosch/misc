@@ -1,0 +1,223 @@
+#!/bin/bash
+
+source hooks/post-receive.config
+
+read OLD_REV NEW_REV BRANCH
+
+check_err()
+{
+	local err="$1"
+	local msg="$2"
+
+	if [[ $err -eq 0 ]]; then
+		printf "STEP: %-65s  [ OK ]\n" "$msg"
+	else
+		printf "STEP: %-65s  [FAIL]\n" "$msg"
+
+	fi
+}
+
+log_step()
+{
+	local name="$1"
+
+	printf "\n######################## "$name" ########################\n\n"
+}
+
+ssh_cmd()
+{
+	local machine="$1"
+	local cmd="$2"
+
+	ssh -t -o LogLevel=QUIET "$machine" "$cmd"
+}
+
+init()
+{
+	log_step "INIT"
+
+	export GIT_DIR="$(pwd)"
+
+	echo "Build start: $(date)"
+	echo "Git branch: "$BRANCH""
+	echo "Git HEAD: $(git log -1 --pretty="%h %s" --abbrev=12 "$BRANCH")"
+}
+
+deploy_code()
+{
+	echo "Deploying code to: "$DEPLOY_DIR""
+
+	GIT_WORK_TREE="$DEPLOY_DIR" git checkout "$BRANCH" -f &> /dev/null
+	cd "$DEPLOY_DIR" && cp "$COMPILE_SCRIPT" compile.sh
+}
+
+static_checkers_run()
+{
+	cd "$DEPLOY_DIR"
+
+	# Compile without debug options to allow static checkers to run
+	# successfully.
+	./compile.sh &> /dev/null
+
+	rm -f static.log
+	make C=2 CF="-D__CHECK_ENDIAN__" \
+		M=drivers/net/ethernet/mellanox/mlxsw/ 2>&1 | \
+	       egrep 'error|warn|info' | tee static.log
+	test $(cat static.log | wc -l) -eq 0
+	check_err $? "Sparse"
+
+	rm -f static.log
+	make CHECK="smatch -p=kernel" C=2 \
+		M=drivers/net/ethernet/mellanox/mlxsw/ 2>&1 | \
+	       egrep 'error|warn|info' | tee static.log
+	test $(cat static.log | wc -l) -eq 0
+	check_err $? "Smatch"
+
+	rm -f static.log
+	make includecheck | egrep '*mlxsw*' | tee static.log
+	test $(cat static.log | wc -l) -eq 0
+	check_err $? "Includecheck"
+
+	test $(make checkstack M=drivers/net/ethernet/mellanox/mlxsw/ | \
+		grep mlxsw | awk -F ':' '{ print $2 }' | head -n 1) -lt 512
+	check_err $? "Checkstack"
+}
+
+compile()
+{
+	cd "$DEPLOY_DIR"
+
+	rm -f static.log
+	./compile.sh -d 2>&1 | egrep 'error|warn|info' | grep 'mlxsw' | \
+		tee static.log
+	check_err $? "Compilation"
+}
+
+build()
+{
+	log_step "BUILD"
+
+	deploy_code
+	static_checkers_run
+	compile
+}
+
+dut_install()
+{
+	ssh_cmd "$DUT" "cd "$DEPLOY_DIR_DUT" && \
+		sudo make modules_install &> /dev/null && \
+		sudo make install &> /dev/null"
+	ssh_cmd "$DUT" "sudo grub2-reboot 0 && sudo shutdown -r +1 &> /dev/null"
+	check_err $? "DUT installation"
+}
+
+dut_firmware_get()
+{
+	local cmd
+
+	cmd="/usr/sbin/ethtool -i "$DUT_NETDEV" | grep firmware"
+	ssh_cmd "$DUT" "$cmd" | awk -F ':' '{ print $2 }'
+}
+
+dut_params_log()
+{
+	local hostname=$(ssh_cmd "$DUT" "hostname")
+	local kernel=$(ssh_cmd "$DUT" "uname -r")
+	local firmware=$(dut_firmware_get)
+
+	echo "DUT hostname: "$hostname""
+	echo "DUT kernel: "$kernel""
+	echo "DUT firmware: "$firmware""
+}
+
+deploy()
+{
+	log_step "DEPLOY"
+
+	dut_install
+	sleep "$DUT_WAIT"
+	dut_params_log
+}
+
+forwarding_test_run()
+{
+	local test_name="$1"
+	local desc="$2"
+	local tests="$3"
+
+	if [[ "$tests" = "all" ]]; then
+		tests=""
+	fi
+
+	ssh_cmd "$DUT" "${chdir_cmd} && export TESTS="$tests" && \
+		sudo ./"$test_name".sh &> /dev/null"
+	check_err $? "Forwarding: $desc test"
+}
+
+test_run()
+{
+	local chdir_cmd
+
+	log_step "TEST"
+
+	ssh_cmd "$DUT" "sudo /usr/sbin/sysctl -qw kernel.panic_on_oops=1"
+	ssh_cmd "$DUT" "sudo /usr/sbin/sysctl -qw kernel.panic_on_warn=1"
+
+	### Generic networking tests ###
+
+	chdir_cmd="cd "$DEPLOY_DIR_DUT" && cd tools/testing/selftests/net/"
+
+	ssh_cmd "$DUT" "${chdir_cmd} && sudo ./fib_tests.sh &> /dev/null"
+	check_err $? "FIB tests"
+
+	ssh_cmd "$DUT" "${chdir_cmd} && sudo ./fib-onlink-tests.sh &> /dev/null"
+	check_err $? "FIB onlink tests"
+
+	### Forwarding tests ###
+
+	cp "$FORWARDING_CONF" \
+		"$DEPLOY_DIR"/tools/testing/selftests/net/forwarding
+
+	chdir_cmd="cd "$DEPLOY_DIR_DUT" && \
+		cd tools/testing/selftests/net/forwarding"
+
+	forwarding_test_run "bridge_vlan_aware" "Bridge VLAN aware" "all"
+	forwarding_test_run "bridge_vlan_unaware" "Bridge VLAN unaware" "all"
+	forwarding_test_run "router" "Router" "all"
+	forwarding_test_run "router_multipath" "Multipath routing" \
+		"ping_ipv4 ping_ipv6"
+	forwarding_test_run "tc_flower" "TC flower" \
+		"match_dst_mac_test match_src_mac_test match_dst_ip_test \
+		match_src_ip_test"
+	forwarding_test_run "tc_actions" "TC actions" "all"
+	forwarding_test_run "tc_chains" "TC chains" "all"
+	forwarding_test_run "tc_shblocks" "TC shared blocks" "all"
+	forwarding_test_run "mirror_gre" "Mirror to GRE tap" "all"
+	forwarding_test_run "mirror_gre_nh" "Mirror to GRE tap w/nexthop" "all"
+	forwarding_test_run "mirror_gre_neigh" \
+		"Mirror to GRE tap w/changing neighbour" "all"
+	forwarding_test_run "mirror_gre_flower" \
+		"Mirror to GRE tap triggered via flower" "all"
+	forwarding_test_run "mirror_gre_changes" \
+		"Mirror to GRE tap w/configuration changes" "all"
+	forwarding_test_run "mirror_gre_bound" \
+		"Mirror to GRE tap w/bound device" "all"
+
+	ssh_cmd "$DUT" "sudo /usr/sbin/sysctl -qw kernel.panic_on_oops=0"
+	ssh_cmd "$DUT" "sudo /usr/sbin/sysctl -qw kernel.panic_on_warn=0"
+}
+
+fini()
+{
+	log_step "FINI"
+
+	export GIT_DIR=""
+
+	echo -e "Build end: $(date)"
+}
+
+init
+build
+deploy
+test_run
+fini
