@@ -202,6 +202,14 @@ test_run()
 		"Mirror to GRE tap w/configuration changes" "all"
 	forwarding_test_run "mirror_gre_bound" \
 		"Mirror to GRE tap w/bound device" "all"
+	forwarding_test_run "mirror_gre_bridge_1d_vlan" \
+		"Mirror to GRE tap w/underlay VLAN-unaware bridge" "all"
+	forwarding_test_run "mirror_gre_bridge_1q_vlan" \
+		"Mirror to GRE tap w/underlay VLAN-aware bridge" "all"
+	forwarding_test_run "mirror_gre_vlan" \
+		"Mirror to GRE tap w/underlay VLAN device" "all"
+	forwarding_test_run "mirror_vlan" \
+		"Mirror to VLAN device (RSPAN)" "all"
 
 	ssh_cmd "$DUT" "sudo /usr/sbin/sysctl -qw kernel.panic_on_oops=0"
 	ssh_cmd "$DUT" "sudo /usr/sbin/sysctl -qw kernel.panic_on_warn=0"
