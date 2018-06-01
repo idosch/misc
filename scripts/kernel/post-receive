@@ -204,7 +204,7 @@ test_run()
 		"Mirror to GRE tap w/bound device" "all"
 	forwarding_test_run "mirror_gre_bridge_1d_vlan" \
 		"Mirror to GRE tap w/underlay VLAN-unaware bridge" "all"
-	forwarding_test_run "mirror_gre_bridge_1q_vlan" \
+	forwarding_test_run "mirror_gre_vlan_bridge_1q" \
 		"Mirror to GRE tap w/underlay VLAN-aware bridge" "all"
 	forwarding_test_run "mirror_gre_vlan" \
 		"Mirror to GRE tap w/underlay VLAN device" "all"
