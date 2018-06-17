@@ -218,6 +218,8 @@ test_run()
 		"Mirror to GRE w/UL 802.1q" "all"
 	forwarding_test_run "mirror_gre_bridge_1d" \
 		"Mirror to GRE w/UL 802.1d" "all"
+	forwarding_test_run "mirror_gre_bridge_1q_lag" \
+		"Mirror to GRE w/UL team device" "all"
 
 	ssh_cmd "$DUT" "sudo /usr/sbin/sysctl -qw kernel.panic_on_oops=0"
 	ssh_cmd "$DUT" "sudo /usr/sbin/sysctl -qw kernel.panic_on_warn=0"
