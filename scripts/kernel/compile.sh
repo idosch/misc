@@ -43,6 +43,7 @@ kernel_config()
 	config_set_str CONFIG_LOCALVERSION "-custom"
 	config_enable CONFIG_BPF_SYSCALL
 	config_enable CONFIG_CGROUP_BPF
+	config_module CONFIG_NETLINK_DIAG
 	# Bus Options
 	config_disable CONFIG_PCCARD
 	# Networking support
