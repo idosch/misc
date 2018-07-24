@@ -79,7 +79,7 @@ static_checkers_run()
 	check_err $? "Includecheck"
 
 	test $(make checkstack M=drivers/net/ethernet/mellanox/mlxsw/ | \
-		grep mlxsw | awk -F ':' '{ print $2 }' | head -n 1) -le 512
+		grep mlxsw | awk -F ':' '{ print $2 }' | head -n 1) -le 524
 	check_err $? "Checkstack"
 }
 
