@@ -98,6 +98,7 @@ kernel_config()
 	config_module CONFIG_VETH
 	config_module CONFIG_NET_VRF
 	config_module CONFIG_MACVLAN
+	config_module CONFIG_VXLAN
 	config_module CONFIG_IGB
 	config_module CONFIG_MLXSW_CORE
 	config_enable CONFIG_MLXSW_CORE_HWMON
