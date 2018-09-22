@@ -88,7 +88,7 @@ compile()
 	cd "$DEPLOY_DIR"
 
 	rm -f static.log
-	./compile.sh -d 2>&1 | egrep 'error|warn|info' | grep 'mlxsw' | \
+	./compile.sh -d -a 2>&1 | egrep 'error|warn|info' | grep 'mlxsw' | \
 		tee static.log
 	check_err $? "Compilation"
 }
