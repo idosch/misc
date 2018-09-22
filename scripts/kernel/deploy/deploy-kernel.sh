@@ -123,10 +123,10 @@ git remote update $remote
 git checkout -B $branch $remote/$branch
 if [ $debug = "on" ]; then
 	echo "debug"
-	./compile.sh -d
+	./compile.sh -d -a
 elif [ $heavy_debug = "on" ]; then
 	echo "heavy debug"
-	./compile.sh -D
+	./compile.sh -D -a
 else
 	echo "no debug"
 	./compile.sh
