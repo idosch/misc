@@ -22,24 +22,18 @@ config_set_val()
 
 config_module()
 {
-	if [ "$_arg_vm" = "on" ]; then
-		scripts/config -e $1
-	else
-		scripts/config -m $1
-	fi
+	scripts/config -m $1
 }
 
 prepare_dir()
 {
 	make clean &> /dev/null
 	make defconfig &> /dev/null
-	make localmodconfig &> /dev/null
 }
 
 kernel_config()
 {
 	# General
-	config_enable CONFIG_LOCALVERSION_AUTO
 	config_set_str CONFIG_LOCALVERSION "-custom"
 	config_enable CONFIG_BPF_SYSCALL
 	config_enable CONFIG_CGROUP_BPF
@@ -220,6 +214,7 @@ heavy_debug()
 compile()
 {
 	make olddefconfig &> /dev/null
+
 	make -j`nproc`
 }
 
@@ -235,26 +230,26 @@ die()
 begins_with_short_option()
 {
 	local first_option all_short_options
-	all_short_options='dDvsh'
+	all_short_options='dDvah'
 	first_option="${1:0:1}"
 	test "$all_short_options" = "${all_short_options/$first_option/}" && return 1 || return 0
 }
 
-
-
 # THE DEFAULTS INITIALIZATION - OPTIONALS
-_arg_debug=off
-_arg_heavy_debug=off
-_arg_vm=off
+_arg_debug="off"
+_arg_heavy_debug="off"
+_arg_vm="off"
+_arg_auto_version="off"
 
 print_help ()
 {
-	printf "%s\n" "Script to ease kernel configuration and compilation"
-	printf 'Usage: %s [-d|--(no-)debug] [-D|--(no-)heavy-debug] [-v|--(no-)vm] [-h|--help]\n' "$0"
-	printf "\t%s\n" "-d,--debug,--no-debug: Enable useful debug options (off by default)"
-	printf "\t%s\n" "-D,--heavy-debug,--no-heavy-debug: Enable a lot of debug options. Results in a very slow kernel. (off by default)"
-	printf "\t%s\n" "-v,--vm,--no-vm: Configure kernel for a VM (off by default)"
-	printf "\t%s\n" "-h,--help: Prints help"
+	printf '%s\n' "Script to ease kernel configuration and compilation"
+	printf 'Usage: %s [-d|--(no-)debug] [-D|--(no-)heavy-debug] [-v|--(no-)vm] [-a|--(no-)auto-version] [-h|--help]\n' "$0"
+	printf '\t%s\n' "-d,--debug,--no-debug: Enable useful debug options (off by default)"
+	printf '\t%s\n' "-D,--heavy-debug,--no-heavy-debug: Enable a lot of debug options. Results in a very slow kernel. (off by default)"
+	printf '\t%s\n' "-v,--vm,--no-vm: Configure kernel for a VM (no modules) (off by default)"
+	printf '\t%s\n' "-a,--auto-version,--no-auto-version: Configure the kernel with LOCALVERSION_AUTO (off by default)"
+	printf '\t%s\n' "-h,--help: Prints help"
 }
 
 parse_commandline ()
@@ -299,6 +294,18 @@ parse_commandline ()
 					begins_with_short_option "$_next" && shift && set -- "-v" "-${_next}" "$@" || die "The short option '$_key' can't be decomposed to ${_key:0:2} and -${_key:2}, because ${_key:0:2} doesn't accept value and '-${_key:2:1}' doesn't correspond to a short option."
 				fi
 				;;
+			-a|--no-auto-version|--auto-version)
+				_arg_auto_version="on"
+				test "${1:0:5}" = "--no-" && _arg_auto_version="off"
+				;;
+			-a*)
+				_arg_auto_version="on"
+				_next="${_key##-a}"
+				if test -n "$_next" -a "$_next" != "$_key"
+				then
+					begins_with_short_option "$_next" && shift && set -- "-a" "-${_next}" "$@" || die "The short option '$_key' can't be decomposed to ${_key:0:2} and -${_key:2}, because ${_key:0:2} doesn't accept value and '-${_key:2:1}' doesn't correspond to a short option."
+				fi
+				;;
 			-h|--help)
 				print_help
 				exit 0
@@ -320,6 +327,10 @@ parse_commandline "$@"
 prepare_dir
 kernel_config
 
+if [ "$_arg_auto_version" = "on" ]; then
+	config_enable CONFIG_LOCALVERSION_AUTO
+fi
+
 if [ "$_arg_debug" = "on" ]; then
 	general_debug
 fi
@@ -327,6 +338,10 @@ fi
 if [ "$_arg_heavy_debug" = "on" ]; then
 	general_debug
 	heavy_debug
+fi
+
+if [ "$_arg_vm" = "on" ]; then
+	config_disable CONFIG_MODULES
 fi
 
 compile
