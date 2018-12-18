@@ -130,7 +130,7 @@ kernel_config()
 	config_disable CONFIG_RETPOLINE
 	config_disable CONFIG_STACK_VALIDATION
 	# Firmware
-	config_set_str CONFIG_EXTRA_FIRMWARE "mellanox/mlxsw_spectrum-13.1703.4.mfa2"
+	config_set_str CONFIG_EXTRA_FIRMWARE "mellanox/mlxsw_spectrum-13.1910.622.mfa2"
 }
 
 general_debug()
