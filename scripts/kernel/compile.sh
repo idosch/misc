@@ -38,6 +38,7 @@ kernel_config()
 	config_enable CONFIG_BPF_SYSCALL
 	config_enable CONFIG_CGROUP_BPF
 	config_module CONFIG_NETLINK_DIAG
+	config_disable CONFIG_SECURITY_SELINUX
 	# Bus Options
 	config_disable CONFIG_PCCARD
 	# Networking support
