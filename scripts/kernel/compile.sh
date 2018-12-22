@@ -126,10 +126,6 @@ kernel_config()
 	config_module CONFIG_VIRTIO_NET
 	config_module CONFIG_VIRTIO_CONSOLE
 	config_module CONFIG_SCSI_VIRTIO
-	# Work around for GCC8
-	config_enable CONFIG_UNWINDER_FRAME_POINTER
-	config_disable CONFIG_RETPOLINE
-	config_disable CONFIG_STACK_VALIDATION
 	# Firmware
 	config_set_str CONFIG_EXTRA_FIRMWARE "mellanox/mlxsw_spectrum-13.1910.622.mfa2"
 }
@@ -140,7 +136,7 @@ general_debug()
 	config_enable CONFIG_PREEMPT
 	config_enable CONFIG_DEBUG_PREEMPT
 	config_enable CONFIG_DEBUG_INFO
-	config_enable CONFIG_UNWINDER_FRAME_POINTER
+	config_enable CONFIG_UNWINDER_ORC
 	# Lock debugging
 	config_enable CONFIG_LOCKDEP
 	config_enable CONFIG_PROVE_LOCKING
