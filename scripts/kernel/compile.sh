@@ -80,6 +80,7 @@ kernel_config()
 	config_disable CONFIG_CFG80211
 	config_disable CONFIG_RFKILL
 	config_enable CONFIG_NET_DEVLINK
+	config_enable CONFIG_OPENVSWITCH
 	# File systems
 	config_module CONFIG_9P_FS
 	config_module CONFIG_XFS_FS
