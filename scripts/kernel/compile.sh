@@ -45,13 +45,34 @@ config()
 	config_enable CONFIG_IKCONFIG_PROC
 	config_enable CONFIG_HIGH_RES_TIMERS
 	config_enable CONFIG_MODULES
+	config_disable CONFIG_SYSVIPC
+	config_disable CONFIG_POSIX_MQUEUE
+	config_disable CONFIG_CROSS_MEMORY_ATTACH
+	config_disable CONFIG_USELIB
+	config_disable CONFIG_AUDIT
+	config_disable CONFIG_CGROUP_SCHED
+	config_disable CONFIG_CGROUP_FREEZER
+	config_disable CONFIG_CPUSETS
+	config_disable CONFIG_CGROUP_CPUACCT
+
+	# Processor type and features
+	config_disable CONFIG_X86_EXTENDED_PLATFORM
+	config_disable CONFIG_IOSF_MBI
+	config_disable CONFIG_CALGARY_IOMMU
 
 	# Power management
 	config_disable CONFIG_SUSPEND
 	config_disable CONFIG_HIBERNATION
 	config_disable CONFIG_PM
+	config_disable CONFIG_ACPI_AC
+	config_disable CONFIG_ACPI_BATTERY
+	config_disable CONFIG_ACPI_BUTTON
+	config_disable CONFIG_ACPI_FAN
+	config_disable CONFIG_ACPI_DOCK
 
 	# Block layer
+	config_disable CONFIG_BLK_DEV_BSG
+	config_disable CONFIG_BLK_DEBUG_FS
 	config_disable CONFIG_PARTITION_ADVANCED
 
 	# Networking support
@@ -186,6 +207,14 @@ config()
 	config_disable CONFIG_BACKLIGHT_LCD_SUPPORT
 	config_disable CONFIG_LOGO
 	config_disable CONFIG_PTP_1588_CLOCK
+	config_disable CONFIG_BLK_DEV_MD
+	config_disable CONFIG_PPS
+	config_disable CONFIG_INPUT_MOUSE
+	config_disable CONFIG_INPUT_JOYSTICK
+	config_disable CONFIG_INPUT_TABLET
+	config_disable CONFIG_INPUT_TOUCHSCREEN
+	config_disable CONFIG_INPUT_MISC
+	config_disable CONFIG_SERIAL_NONSTANDARD
 
 	# File systems
 	config_module CONFIG_XFS_FS
