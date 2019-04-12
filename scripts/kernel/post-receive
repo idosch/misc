@@ -58,14 +58,14 @@ static_checkers_run()
 	rm -f static.log
 	make C=2 CF="-D__CHECK_ENDIAN__" \
 		M=drivers/net/ethernet/mellanox/mlxsw/ 2>&1 | \
-	       egrep 'error|warn|info' | tee static.log
+	       grep 'mlxsw' | egrep 'error|warn|info' | tee static.log
 	test $(cat static.log | wc -l) -eq 0
 	check_err $? "Sparse"
 
 	rm -f static.log
 	make CHECK="smatch -p=kernel" C=2 \
 		M=drivers/net/ethernet/mellanox/mlxsw/ 2>&1 | \
-	       egrep 'error|warn|info' | tee static.log
+	       grep 'mlxsw' | egrep 'error|warn|info' | tee static.log
 	test $(cat static.log | wc -l) -eq 0
 	check_err $? "Smatch"
 
