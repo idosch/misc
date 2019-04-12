@@ -97,7 +97,7 @@ build()
 dut_install()
 {
 	ssh_cmd "$DUT" "cd "$DEPLOY_DIR_DUT" && \
-		sudo kexec -l arch/x86_64/boot/bzImage --append="$CMDLINE" && \
+		sudo kexec -l arch/x86_64/boot/bzImage --reuse-cmdline && \
 		sudo kexec -e"
 	check_err $? "DUT installation"
 }

@@ -18,6 +18,3 @@
 
 # Forwarding config
 # FORWARDING_CONF=
-#
-# Kernel command line to pass to kexec
-# CMDLINE=
