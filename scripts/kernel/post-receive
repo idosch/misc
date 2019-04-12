@@ -97,9 +97,8 @@ build()
 dut_install()
 {
 	ssh_cmd "$DUT" "cd "$DEPLOY_DIR_DUT" && \
-		sudo make modules_install &> /dev/null && \
-		sudo make install &> /dev/null"
-	ssh_cmd "$DUT" "sudo grub2-reboot 0 && sudo shutdown -r +1 &> /dev/null"
+		kexec -l arch/x86_64/boot/bzImage --append="$CMDLINE" && \
+		kexec -e"
 	check_err $? "DUT installation"
 }
 
