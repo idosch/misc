@@ -55,10 +55,6 @@ static_checkers_run()
 {
 	cd "$DEPLOY_DIR"
 
-	# Compile without debug options to allow static checkers to run
-	# successfully.
-	./compile.sh &> /dev/null
-
 	rm -f static.log
 	make C=2 CF="-D__CHECK_ENDIAN__" \
 		M=drivers/net/ethernet/mellanox/mlxsw/ 2>&1 | \
@@ -98,8 +94,8 @@ build()
 	log_step "BUILD"
 
 	deploy_code
-	static_checkers_run
 	compile
+	static_checkers_run
 }
 
 dut_install()
