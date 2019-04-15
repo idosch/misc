@@ -169,6 +169,7 @@ config()
 	config_module CONFIG_VETH
 	config_module CONFIG_NLMON
 	config_module CONFIG_NET_VRF
+	config_module CONFIG_NETDEVSIM
 	config_disable CONFIG_NETCONSOLE
 	config_enable CONFIG_ETHERNET
 	config_module CONFIG_E1000
