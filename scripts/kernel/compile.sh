@@ -127,11 +127,13 @@ config()
 	config_disable CONFIG_NET_EMATCH
 	config_module CONFIG_NET_CLS_FLOWER
 	config_module CONFIG_NET_CLS_MATCHALL
+	config_module CONFIG_NET_CLS_BPF
 	config_enable CONFIG_NET_CLS_ACT
 	config_module CONFIG_NET_ACT_GACT
 	config_module CONFIG_NET_ACT_MIRRED
 	config_module CONFIG_NET_ACT_SAMPLE
 	config_module CONFIG_NET_ACT_VLAN
+	config_module CONFIG_NET_ACT_BPF
 	config_module CONFIG_NET_SCH_INGRESS
 	config_enable CONFIG_DCB
 	config_module CONFIG_OPENVSWITCH
@@ -145,6 +147,7 @@ config()
 	config_enable CONFIG_NET_DEVLINK
 	config_module CONFIG_NET_9P
 	config_enable CONFIG_NET_NS
+	config_enable CONFIG_BPF_JIT
 
 	# Device drivers
 	config_disable CONFIG_PCCARD
@@ -275,6 +278,9 @@ config()
 	config_module CONFIG_VIRTIO_NET
 	config_module CONFIG_VIRTIO_CONSOLE
 	config_module CONFIG_SCSI_VIRTIO
+
+	# Tracing
+	config_enable CONFIG_KPROBE_EVENTS
 }
 
 debug_enable()
