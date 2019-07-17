@@ -220,6 +220,7 @@ config()
 	config_disable CONFIG_INPUT_TOUCHSCREEN
 	config_disable CONFIG_INPUT_MISC
 	config_disable CONFIG_SERIAL_NONSTANDARD
+	config_module CONFIG_NET_DROP_MONITOR
 
 	# File systems
 	config_module CONFIG_XFS_FS
