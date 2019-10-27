@@ -279,9 +279,6 @@ config()
 	config_module CONFIG_VIRTIO_NET
 	config_module CONFIG_VIRTIO_CONSOLE
 	config_module CONFIG_SCSI_VIRTIO
-
-	# Tracing
-	config_enable CONFIG_KPROBE_EVENTS
 }
 
 debug_enable()
@@ -333,6 +330,25 @@ debug_enable()
 	config_enable CONFIG_KCOV
 }
 
+perf_enable()
+{
+	# Enable options for perf utility. From:
+	# http://www.brendangregg.com/perf.html#Building
+	config_enable CONFIG_PERF_EVENTS
+	config_enable CONFIG_UNWINDER_FRAME_POINTER
+	config_enable CONFIG_FRAME_POINTER
+	config_enable CONFIG_KALLSYMS
+	config_enable CONFIG_TRACEPOINTS
+	config_enable CONFIG_FTRACE
+	config_enable CONFIG_KPROBES
+	config_enable CONFIG_KPROBE_EVENTS
+	config_enable CONFIG_UPROBES
+	config_enable CONFIG_UPROBE_EVENTS
+	config_enable CONFIG_DEBUG_INFO
+	config_enable CONFIG_LOCKDEP
+	config_enable CONFIG_LOCK_STAT
+}
+
 more_debug_enable()
 {
 	debug_enable
@@ -370,15 +386,17 @@ usage: ${0##*/} OPTS
         -c          Only create config file. Do not compile
 	-m          Use modules when possible
 	-d          Enable debug options (slow)
+	-p          Enable options for perf utility
 	-D          Enable even more debug options (very slow)
 EOF
 }
 
-while getopts ":cmdDh" opt; do
+while getopts ":cmdpDh" opt; do
 	case ${opt} in
 		c) CONFIG_ONLY=yes;;
 		m) MODULES=yes;;
 		d) DEBUG=yes;;
+		p) PERF=yes;;
 		D) MORE_DEBUG=yes;;
 		h) usage; exit 0;;
 		\?) usage; exit 1;;
@@ -389,6 +407,10 @@ config
 
 if [[ "$DEBUG" = "yes" ]]; then
 	debug_enable
+fi
+
+if [[ "$PERF" = "yes" ]]; then
+	perf_enable
 fi
 
 if [[ "$MORE_DEBUG" = "yes" ]]; then
