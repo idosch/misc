@@ -347,6 +347,7 @@ perf_enable()
 	config_enable CONFIG_DEBUG_INFO
 	config_enable CONFIG_LOCKDEP
 	config_enable CONFIG_LOCK_STAT
+	config_enable CONFIG_IKHEADERS
 }
 
 more_debug_enable()
