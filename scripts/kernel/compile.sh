@@ -348,6 +348,8 @@ perf_enable()
 	config_enable CONFIG_LOCKDEP
 	config_enable CONFIG_LOCK_STAT
 	config_enable CONFIG_IKHEADERS
+	config_enable CONFIG_FUNCTION_TRACER
+	config_enable CONFIG_FUNCTION_GRAPH_TRACER
 }
 
 more_debug_enable()
