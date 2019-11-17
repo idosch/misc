@@ -55,6 +55,7 @@ config()
 	config_disable CONFIG_CGROUP_FREEZER
 	config_disable CONFIG_CPUSETS
 	config_disable CONFIG_CGROUP_CPUACCT
+	config_disable CONFIG_RETPOLINE
 
 	# Processor type and features
 	config_disable CONFIG_X86_EXTENDED_PLATFORM
