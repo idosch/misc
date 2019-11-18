@@ -125,7 +125,9 @@ config()
 	config_module CONFIG_NET_SCH_PRIO
 	config_module CONFIG_NET_SCH_RED
 	config_enable CONFIG_NET_SCH_DEFAULT
+	config_module CONFIG_NET_SCH_FQ_CODEL
 	config_disable CONFIG_NET_EMATCH
+	config_module CONFIG_NET_CLS_BASIC
 	config_module CONFIG_NET_CLS_FLOWER
 	config_module CONFIG_NET_CLS_MATCHALL
 	config_module CONFIG_NET_CLS_BPF
