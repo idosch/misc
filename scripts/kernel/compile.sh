@@ -383,6 +383,13 @@ more_debug_enable()
 	config_enable CONFIG_LOCK_STAT
 	config_enable CONFIG_DEBUG_OBJECTS_RCU_HEAD
 	config_enable CONFIG_SPARSE_RCU_POINTER
+	## For syzkaller
+	config_enable CONFIG_CONFIGFS_FS
+	config_enable CONFIG_SECURITYFS
+	config_enable CONFIG_KCOV_ENABLE_COMPARISONS
+	config_enable CONFIG_USER_NS
+	config_disable CONFIG_RANDOMIZE_BASE
+	config_enable CONFIG_FAULT_INJECTION
 }
 
 usage()
