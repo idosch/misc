@@ -189,8 +189,6 @@ config()
 	config_disable CONFIG_PHYLIB
 	config_disable CONFIG_MDIO_DEVICE
 	config_module CONFIG_MLXSW_CORE
-	config_disable CONFIG_MLXSW_SWITCHIB
-	config_disable CONFIG_MLXSW_SWITCHX2
 	config_disable CONFIG_WLAN
 	config_module CONFIG_VIRTIO_PCI
 	config_module CONFIG_VIRTIO_BALLOON
