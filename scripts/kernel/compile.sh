@@ -428,12 +428,13 @@ if [[ "$MORE_DEBUG" = "yes" ]]; then
 	more_debug_enable
 fi
 
-if [[ "$MODULES" = "" ]]; then
-	config_disable CONFIG_MODULES
-fi
-
 # Set new symbols to their default
 make olddefconfig &> /dev/null
+
+if [[ "$MODULES" = "" ]]; then
+	make mod2yesconfig &> /dev/null
+fi
+
 
 if [[ "$CONFIG_ONLY" = "yes" ]]; then
 	exit 0
