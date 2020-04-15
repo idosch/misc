@@ -126,6 +126,8 @@ config()
 	config_module CONFIG_NET_SCH_RED
 	config_enable CONFIG_NET_SCH_DEFAULT
 	config_module CONFIG_NET_SCH_FQ_CODEL
+	config_module CONFIG_NET_SCH_ETS
+	config_module CONFIG_NET_SCH_TBF
 	config_disable CONFIG_NET_EMATCH
 	config_module CONFIG_NET_CLS_BASIC
 	config_module CONFIG_NET_CLS_FLOWER
@@ -137,6 +139,8 @@ config()
 	config_module CONFIG_NET_ACT_SAMPLE
 	config_module CONFIG_NET_ACT_VLAN
 	config_module CONFIG_NET_ACT_BPF
+        config_module CONFIG_NET_ACT_SKBEDIT
+        config_module CONFIG_NET_ACT_PEDIT
 	config_module CONFIG_NET_SCH_INGRESS
 	config_enable CONFIG_DCB
 	config_module CONFIG_OPENVSWITCH
@@ -189,6 +193,8 @@ config()
 	config_disable CONFIG_PHYLIB
 	config_disable CONFIG_MDIO_DEVICE
 	config_module CONFIG_MLXSW_CORE
+	config_module CONFIG_MLXSW_SWITCHIB
+	config_module CONFIG_MLXSW_SWITCHX2
 	config_disable CONFIG_WLAN
 	config_module CONFIG_VIRTIO_PCI
 	config_module CONFIG_VIRTIO_BALLOON
@@ -196,6 +202,10 @@ config()
 	config_module CONFIG_I2C_MLXCPLD
 	config_module CONFIG_I2C_MUX
 	config_module CONFIG_I2C_MUX_MLXCPLD
+	config_module CONFIG_I2C_CHARDEV
+	config_enable CONFIG_GPIOLIB
+	config_enable CONFIG_GPIO_SYSFS
+	config_module CONFIG_GPIO_ICH
 	config_enable CONFIG_NEW_LEDS
 	config_module CONFIG_LEDS_CLASS
 	config_module CONFIG_LEDS_MLXCPLD
@@ -212,7 +222,6 @@ config()
 	config_disable CONFIG_DRM
 	config_disable CONFIG_BACKLIGHT_LCD_SUPPORT
 	config_disable CONFIG_LOGO
-	config_disable CONFIG_PTP_1588_CLOCK
 	config_disable CONFIG_BLK_DEV_MD
 	config_disable CONFIG_PPS
 	config_disable CONFIG_INPUT_MOUSE
@@ -272,6 +281,14 @@ config()
 	# Virtualization
 	config_module CONFIG_KVM
 	config_module CONFIG_KVM_INTEL
+	config_module CONFIG_KVM_VFIO
+	config_module CONFIG_VFIO
+	config_module CONFIG_VFIO_PCI
+	config_enable CONFIG_IOMMU_API
+	config_enable CONFIG_IOMMU_SUPPORT
+	config_enable CONFIG_IOMMU_INTEL
+	config_enable CONFIG_INTEL_IOMMU_DEFAULT_ON
+	config_enable CONFIG_IRQ_REMAP
 	config_module CONFIG_VIRTIO
 	config_module CONFIG_VIRTIO_PCI
 	config_module CONFIG_VIRTIO_BLK
@@ -280,6 +297,10 @@ config()
 	config_module CONFIG_VIRTIO_NET
 	config_module CONFIG_VIRTIO_CONSOLE
 	config_module CONFIG_SCSI_VIRTIO
+	# PTP
+	config_enable CONFIG_PTP_1588_CLOCK
+	# Debug info
+	config_enable CONFIG_DEBUG_INFO
 }
 
 debug_enable()
@@ -395,17 +416,17 @@ usage()
 	cat <<EOF
 usage: ${0##*/} OPTS
         -c          Only create config file. Do not compile
-	-m          Use modules when possible
+	-v          Configure kernel for a VM (no modules) (off by default)
 	-d          Enable debug options (slow)
 	-p          Enable options for perf utility
 	-D          Enable even more debug options (very slow)
 EOF
 }
 
-while getopts ":cmdpDh" opt; do
+while getopts ":cvdpDh" opt; do
 	case ${opt} in
 		c) CONFIG_ONLY=yes;;
-		m) MODULES=yes;;
+		v) MODULES=no;;
 		d) DEBUG=yes;;
 		p) PERF=yes;;
 		D) MORE_DEBUG=yes;;
@@ -431,10 +452,9 @@ fi
 # Set new symbols to their default
 make olddefconfig &> /dev/null
 
-if [[ "$MODULES" = "" ]]; then
+if [[ "$MODULES" = "no" ]]; then
 	make mod2yesconfig &> /dev/null
 fi
-
 
 if [[ "$CONFIG_ONLY" = "yes" ]]; then
 	exit 0
